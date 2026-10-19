@@ -29,7 +29,7 @@ namespace SmartGridControl
 
         static void SystemCoreEngineer()
         {
-            // TransferLoad (ref + out)
+            // Трансферная загрузка (ref + out)
             int sourceLoad = 850;
             int targetCapacity = 400;
             int requestedMw = 300;
@@ -62,7 +62,7 @@ namespace SmartGridControl
             Console.WriteLine($"Вероятность каскадного отключения для {nodes} узлов: {probability:P2}\n");
         }
 
-        // TransferLoad: переброска мощности с расчетом потерь и перегрузки
+        // переброска мощности с расчетом потерь и перегрузки
         static void TransferLoad(ref int sourceLoad, ref int targetCapacity, int requestedMw, out bool isOverloaded, out int lossMegawatts)
         {
             // Расчет потерь на сопротивлении (упрощенная модель: 2% от передаваемой мощности)
@@ -76,7 +76,7 @@ namespace SmartGridControl
             isOverloaded = (sourceLoad < (sourceLoad + actualTransfer) * 0.1) || targetCapacity > 950;
         }
 
-        // StabilizeFrequency: Перегрузка 1 (базовая микроподстройка)
+        // Перегрузка 1 
         static void StabilizeFrequency(ref double gridHz)
         {
             double correction = (TARGET_FREQUENCY - gridHz) * 0.5;
@@ -84,7 +84,7 @@ namespace SmartGridControl
             if (Math.Abs(gridHz - TARGET_FREQUENCY) < 0.01) gridHz = TARGET_FREQUENCY;
         }
 
-        // StabilizeFrequency: Перегрузка 2 (подключение резервов)
+        // Перегрузка 2 
         static void StabilizeFrequency(ref double gridHz, double hydroReserveMw, double thermalReserveMw, out double deviation)
         {
             // каждые 100 МВт резерва дают +0.1 Гц к частоте при просадке
@@ -100,7 +100,7 @@ namespace SmartGridControl
             deviation = Math.Abs(TARGET_FREQUENCY - gridHz);
         }
 
-        // CascadeFailureProbability: рекурсивный расчет цепной реакции
+        // рекурсивный расчет цепной реакции
         static double CalculateCascade(int nodeCount, double currentStress, int step)
         {
             // Базовый случай: затухание напряжения или конец цепи
@@ -124,7 +124,7 @@ namespace SmartGridControl
 
         static void AnalyticsEngineer()
         {
-            // SumDistrictDeficit (params)
+            // SumDistrictDeficit (параметры)
             int[] districtDemands = { 120, 450, 80, 610, 300, 95 };
             int thresholdLimit = 500;
 
@@ -134,7 +134,7 @@ namespace SmartGridControl
             int totalDeficit = AnalyzeDeficit(thresholdLimit, districtDemands);
             Console.WriteLine($"Суммарный дефицит по районам сверх лимита: {totalDeficit} МВт\n");
 
-            // RenderGridTopology (матрица + анализ)
+            // (матрица + анализ)
             int[,] powerMatrix = {
                 { 100, 50, 20, 0 },
                 { 50, 200, 80, 30 },
@@ -146,7 +146,7 @@ namespace SmartGridControl
             RenderGridTopology(powerMatrix);
         }
 
-        // AnalyzeDeficit: агрегация с params
+        // агрегация с параметрами
         static int AnalyzeDeficit(int thresholdLimit, params int[] districtDemands)
         {
             if (districtDemands == null || districtDemands.Length == 0) return 0;
@@ -163,7 +163,7 @@ namespace SmartGridControl
             return deficitSum;
         }
 
-        // RenderGridTopology: анализ матрицы связности
+        // анализ матрицы связности
         static void RenderGridTopology(int[,] powerMatrix)
         {
             int sectors = powerMatrix.GetLength(0);
@@ -180,7 +180,7 @@ namespace SmartGridControl
                 {
                     rowSum += powerMatrix[i, j];
 
-                    // Поиск максимального риска (в диагонали риск КЗ обычно выше из-за собственных токов узла)
+                    // Поиск максимального риска
                     if (i == j && powerMatrix[i, j] > maxRiskValue)
                     {
                         maxRiskValue = powerMatrix[i, j];
@@ -210,4 +210,9 @@ namespace SmartGridControl
     }
 }
 ```
+!Результат выполнения:
+<img width="1437" height="853" alt="scr 1" src="https://github.com/user-attachments/assets/79a828e9-653b-43cf-ba0e-d4adc7bf2699" />
+<img width="1430" height="825" alt="scr 2" src="https://github.com/user-attachments/assets/c6589c73-0027-41d0-83b2-cb11e291a289" />
+<img width="1452" height="828" alt="scr 3" src="https://github.com/user-attachments/assets/4e171131-4e30-495c-aaf6-fbe1360ffab4" />
+<img width="1810" height="811" alt="scr 4" src="https://github.com/user-attachments/assets/67fd07c2-a9f4-49b0-9e7d-dc9fa9abd614" />
 // Делали Аристов и Башкатова
