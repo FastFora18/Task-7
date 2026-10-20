@@ -1,4 +1,4 @@
-ПРАКТИЧЕСКАЯ 7 (Центр управления энергосетью мегаполиса (Smart Grid))
+Практическая работа № 7
 ```Csharp
 using System;
 using System.Collections.Generic;
